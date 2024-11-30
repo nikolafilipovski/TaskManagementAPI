@@ -23,7 +23,7 @@ namespace TaskManagementSystem.Controllers
                 {
                     Token = token
                 };
-                return Ok(response); // Return the generated token
+                return Ok(response); 
             }
 
             return Unauthorized("Invalid credentials");
