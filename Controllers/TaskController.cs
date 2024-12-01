@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagementSystemData.Entities;
 using TaskManagementSystemService.Interfaces;
 
 namespace TaskManagementSystem.Controllers
 {
-    public class TaskController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TaskController : ControllerBase
     {
         private readonly ITasksService _tasksService;
 
@@ -14,25 +16,29 @@ namespace TaskManagementSystem.Controllers
             _tasksService = tasksService;
         }
 
-        [HttpGet]
+        [Authorize]
+        [HttpGet("GetAllTasks")]
         public async Task<ActionResult<IEnumerable<Task>>> GetAllTasks()
         {
             var tasks = await _tasksService.GetAllTasks();
-
             return Ok(tasks);
         }
 
-        [HttpPost]
+        [Authorize]
+        [HttpPost("CreateTask")]
         public async Task<ActionResult<Task>> CreateTask(TaskDto task)
         {
-            var result = await _tasksService.CreateTask(task);
-
-            return Ok(task);
+            var createdTask = await _tasksService.CreateTask(task);
+            return CreatedAtAction(nameof(GetAllTasks), new { id = createdTask.Id }, createdTask);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Task>> UpdateTask(TaskDto task)
+        [Authorize]
+        [HttpPut("UpdateTask/{taskId}")]
+        public async Task<ActionResult<Task>> UpdateTask(int taskId, TaskDto task)
         {
+            if (taskId != task.Id)
+                return BadRequest("Task Id not the same.");
+
             var updatedTask = await _tasksService.UpdateTask(task);
 
             if (updatedTask == null)
@@ -41,7 +47,8 @@ namespace TaskManagementSystem.Controllers
             return Ok(updatedTask);
         }
 
-        [HttpDelete]
+        [Authorize]
+        [HttpDelete("DeleteTask/{taskId}")]
         public async Task<ActionResult<bool>> DeleteTask(int taskId)
         {
             var success = await _tasksService.DeleteTask(taskId);
@@ -49,7 +56,7 @@ namespace TaskManagementSystem.Controllers
             if (!success)
                 return NotFound();
 
-            return Ok(true);
+            return true; 
         }
     }
 }
