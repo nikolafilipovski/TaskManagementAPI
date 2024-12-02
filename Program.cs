@@ -82,7 +82,7 @@ builder.Services.AddCors(options =>
 
     options.AddPolicy("AllowSwagger", builder =>
     {
-        builder.WithOrigins("http://localhost:44334") // Swagger UI URL
+        builder.WithOrigins("https://localhost:44334") // Swagger UI
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
@@ -97,11 +97,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task Management API"));
 }
 
-app.UseCors(corsPolicyName);
-app.UseCors("AllowSwagger");
+app.UseCors(builder.Environment.IsDevelopment() ? "AllowSwagger" : corsPolicyName);
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
