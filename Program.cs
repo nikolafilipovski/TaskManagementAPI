@@ -97,7 +97,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task Management API"));
 }
 
-app.UseCors(builder.Environment.IsDevelopment() ? "AllowSwagger" : corsPolicyName);
+app.UseCors(corsPolicyName);
+app.UseCors("AllowSwagger");
 
 app.UseHttpsRedirection();
 
