@@ -12,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TaskManagementSystemRepository\TaskManagementSystemRepository.csproj" />
     <ProjectReference Include="..\TaskManagementSystemService\TaskManagementSystemService.csproj" />
+    <ProjectReference Include="..\TaskManagementSystemData\TaskManagementSystemData.csproj" />
   </ItemGroup>
 
 </Project>
